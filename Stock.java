@@ -38,47 +38,42 @@ public class Stock {
         if (soldShares <= totalShares) {
             double realizedGain = 0.0;
             double unrealizedGain = 0.0;
-            int remainSoldShares = soldShares;
-            int remainTotalShares;
-            boolean flag = false;
-            // Complete this code
-            // Something is missing here
+            boolean flagUnrealizeGain = false;
+
             totalShares -= soldShares;
-            remainTotalShares = totalShares;
-            do {
+            while (soldShares != 0) {
 
-                if (remainSoldShares < list.top().shares) {
-                    remainSoldShares = soldShares;
-                    if(realizedGain == 0.0){
-                        list.pop();
-                        flag = true;
-                        break;
+                if (soldShares < list.top().shares) {
+                    if (!flagUnrealizeGain) {
+                        realizedGain += (soldPrice - list.top().price) * soldShares;
+                        list.top().shares -= soldShares;
+                        soldShares -= soldShares;
                     }
-                    if(flag) break;
 
                 }
-                if (remainSoldShares > list.top().shares) {
-                    remainSoldShares = list.top().shares;
-                    
+                if (soldShares >= list.top().shares) {
+
+                    if (!flagUnrealizeGain) {
+                        realizedGain += (soldPrice - list.top().price) * list.top().shares;
+                        soldShares -= list.top().shares;
+                        list.pop();
+                    } else {
+                        Node n = list.top();
+                        while (n != null) {
+                            unrealizedGain += (soldPrice - n.price) * n.shares;
+                            soldShares -= n.shares;
+                            n = n.next;
+                        }
+                    }
 
                 }
-                realizedGain += (soldPrice - (list.top().price)) * remainSoldShares;
-                soldShares -= remainSoldShares;
-                if (remainSoldShares == list.top().shares) {
-                    list.pop();
+                if (soldShares == 0) {
+                    if (!flagUnrealizeGain) {
+                        soldShares = totalShares;
+                    }
+                    flagUnrealizeGain = true;
                 }
-            } while (soldShares != 0);
-            List tempList = new Stack();
-            tempList.push(list.top());
-            while (totalShares != 0) { //This loop for unrealizerGain.
-                if (remainTotalShares > list.top().shares) {
-                    remainTotalShares = list.top().shares - remainSoldShares; //stock remain form total
-                    totalShares -= remainTotalShares;
-                }
-                unrealizedGain += (soldPrice - (list.top().price)) * remainTotalShares;
-                remainTotalShares = totalShares;
-                totalShares -= remainTotalShares;
-                tempList.pop();
+
             }
 
             System.out.println("Realized P/L = " + realizedGain + " Unrealized P/L = " + unrealizedGain);

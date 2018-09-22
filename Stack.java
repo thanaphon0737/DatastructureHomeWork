@@ -17,7 +17,8 @@ public class Stack implements List{
             // Do something
             head = node;
         }else{
-            node.next = node;
+            node.next = head;
+            head = node;
             // Do something else
         }
     }
