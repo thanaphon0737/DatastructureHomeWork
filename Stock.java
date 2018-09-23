@@ -69,7 +69,7 @@ public class Stock {
                 }
                 if (soldShares == 0) { 
                     if (!flagUnrealizeGain) {//do this when flag down
-                        soldShares = totalShares //change totalShares to soldShares for calculate unrealizedGain
+                        soldShares = totalShares; //change totalShares to soldShares for calculate unrealizedGain
                     }
                     
 					flagUnrealizeGain = true; //change to flag up
