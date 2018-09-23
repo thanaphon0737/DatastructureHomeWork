@@ -30,7 +30,7 @@ public class Stock {
     public void buy(int boughtShares, double boughtPrice) {
         // Complete this code
         // Something is missing here
-        list.push(new Node(boughtShares, boughtPrice));
+        list.push(new Node(boughtShares, boughtPrice));//to push buydata to list
         totalShares += boughtShares;
     }
 
@@ -38,40 +38,41 @@ public class Stock {
         if (soldShares <= totalShares) {
             double realizedGain = 0.0;
             double unrealizedGain = 0.0;
-            boolean flagUnrealizeGain = false;
+            boolean flagUnrealizeGain = false; //for control when to calculate realizedGain and unrealizedGain
 
             totalShares -= soldShares;
-            while (soldShares != 0) {
+            while (soldShares != 0) { //do until soldShares = 0
 
-                if (soldShares < list.top().shares) {
-                    if (!flagUnrealizeGain) {
-                        realizedGain += (soldPrice - list.top().price) * soldShares;
-                        list.top().shares -= soldShares;
-                        soldShares -= soldShares;
+                if (soldShares < list.top().shares) { //do when soldShares < list.top().shares
+                    if (!flagUnrealizeGain) { //do when flag down
+                        realizedGain += (soldPrice - list.top().price) * soldShares; //calculate realizeGain
+                        list.top().shares -= soldShares; //to change list.top().shares after sell 
+                        soldShares -= soldShares; // soldShares = 0 
                     }
 
                 }
-                if (soldShares >= list.top().shares) {
+                if (soldShares >= list.top().shares) { // do when soldShares >= list.top().shares
 
-                    if (!flagUnrealizeGain) {
-                        realizedGain += (soldPrice - list.top().price) * list.top().shares;
-                        soldShares -= list.top().shares;
-                        list.pop();
-                    } else {
-                        Node n = list.top();
-                        while (n != null) {
-                            unrealizedGain += (soldPrice - n.price) * n.shares;
-                            soldShares -= n.shares;
-                            n = n.next;
+                    if (!flagUnrealizeGain) { //when flag down calculate realizedGain
+                        realizedGain += (soldPrice - list.top().price) * list.top().shares; //calculate realizeGain
+                        soldShares -= list.top().shares;//to decrease soldShares until soldShares = 0
+                        list.pop(); //to change list.top()
+                    } else { //when flag up calculate unrealizedGain
+                        Node n = list.top();//create Node n point to list.top
+                        while (n != null) { //do until n = null
+                            unrealizedGain += (soldPrice - n.price) * n.shares; //calculate unrealizedGain
+                            soldShares -= n.shares; //to decrease soldShares until soldShares = 0
+                            n = n.next; //to access next Node
                         }
                     }
 
                 }
-                if (soldShares == 0) {
-                    if (!flagUnrealizeGain) {
-                        soldShares = totalShares;
+                if (soldShares == 0) { 
+                    if (!flagUnrealizeGain) {//do this when flag down
+                        soldShares = totalShares //change totalShares to soldShares for calculate unrealizedGain
                     }
-                    flagUnrealizeGain = true;
+                    
+					flagUnrealizeGain = true; //change to flag up
                 }
 
             }

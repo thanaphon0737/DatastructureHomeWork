@@ -27,7 +27,7 @@ public class Stack implements List{
         // Fix this function
         
         if (head != null){
-            head = head.next;
+            head = head.next; //to delete head
             // Do something
         }else{
             System.out.println("Error: Stack Underflow");
