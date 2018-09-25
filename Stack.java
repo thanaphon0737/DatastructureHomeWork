@@ -12,8 +12,8 @@ public class Stack implements List{
     // Implement Stack using Linked List without tail
     Node head;
     
-    public void push(Node node){
-        if (head == null){
+    public void push(Node node){ // same pushFront in LinkedList.
+        if (head == null){ // if stack is empty
             // Do something
             head = node;
         }else{
@@ -26,8 +26,8 @@ public class Stack implements List{
     public void pop(){
         // Fix this function
         
-        if (head != null){
-            head = head.next; //to delete head
+        if (head != null){ // if stack is not empty.
+            head = head.next;
             // Do something
         }else{
             System.out.println("Error: Stack Underflow");
@@ -36,7 +36,7 @@ public class Stack implements List{
     
     public Node top(){
         if(head != null){
-            return head;
+            return head; //return top of stack.
         }else{
             return null;
         }

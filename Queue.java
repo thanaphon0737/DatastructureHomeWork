@@ -14,8 +14,8 @@ public class Queue implements List {
     Node head;
     Node tail;
 
-    public void push(Node node) {
-        if (head == null) {
+    public void push(Node node) { //  same pushBack in LinkedList.
+        if (head == null) { // if empty List .
             head = node;
             tail = node;
             // Do something (Empty list)
@@ -26,7 +26,7 @@ public class Queue implements List {
         }
     }
 
-    public void pop() {
+    public void pop() { //enqueue
         if (head != null) {
             if (head != tail) {
                 head = head.next;
@@ -42,7 +42,7 @@ public class Queue implements List {
     public Node top() {
         // Fix this
         if (head != null) {
-            return head;
+            return head; // return last element in queue.
         }
         return null;
     }
