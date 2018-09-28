@@ -39,18 +39,19 @@ public class Queue {
             size --;
             return temp;
         } else {
-            System.out.println("Queue Underflow!!!");return null;
+            System.out.println("Queue Underflow!!!");
         }
+        return null;
          // fix this (out of place)
     }
 
     public boolean isEmpty() {
-        return front == back-1;
+        return size ==0;
         // fix this
     }
 
     public boolean isFull() {
-        return (back == (back+1)%capacity);
+        return size == capacity;
     }
 
     public void printCircularIndices() {
@@ -59,20 +60,11 @@ public class Queue {
 
     public void printQueue() {
         if (!isEmpty()) {
-            System.out.println("[Front] ");
-            int []  index = new int[size];
-            int j =front;
-            for(int i =0; i < size;i++){
-                
-                index[i] = j%capacity;
-                j++;
-                System.out.print(arr[index[i]].data+" ");
-            }
-           
-           
+            System.out.print("[Front] ");
             
-            
-
+                for (int i = front; i < size+front; i++) {
+                        System.out.print(arr[i % capacity].data + " ");
+                }   
             System.out.println("[Back]");
         } else {
             System.out.println("Empty Queue!!!");
