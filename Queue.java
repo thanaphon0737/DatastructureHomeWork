@@ -12,9 +12,9 @@ public class Queue {
     int back;
     int size;
 
-    public Queue(int cap) {
-        this.capacity = cap;
-        arr = new Node[cap];
+    public Queue(int cap) { //constructor
+        this.capacity = cap; 
+        arr = new Node[cap];// allocate array
 
     }
 
@@ -22,8 +22,8 @@ public class Queue {
         if (!isFull()) {
             // do something
             arr[back] = node;
-            back = (back+1) % capacity;
-            size++;
+            back = (back+1) % capacity; // back is not more than capacity
+            size++; // increasing size
         } else {
             System.out.println("Queue Overflow!!!");
         }
@@ -33,10 +33,9 @@ public class Queue {
 
         if (!isEmpty()) {
             // do something
-            Node temp = arr[front];
-            arr[front] = null;
-            front = (front+1) % capacity;
-            size --;
+            Node temp = arr[front]; // store node is deleted before delete
+            front = (front+1) % capacity; // front is not more than capacity 
+            size --; //decreasing size
             return temp;
         } else {
             System.out.println("Queue Underflow!!!");
@@ -46,12 +45,14 @@ public class Queue {
     }
 
     public boolean isEmpty() {
-        return size ==0;
+        // check size is equal zero
+        return size == 0; // size is equal zero return true
         // fix this
     }
 
     public boolean isFull() {
-        return size == capacity;
+        // check size is equal capacity
+        return size == capacity; 
     }
 
     public void printCircularIndices() {
@@ -61,9 +62,8 @@ public class Queue {
     public void printQueue() {
         if (!isEmpty()) {
             System.out.print("[Front] ");
-            
-                for (int i = front; i < size+front; i++) {
-                        System.out.print(arr[i % capacity].data + " ");
+                for (int i = front; i < size+front; i++) { // start form front follow size which have 
+                        System.out.print(arr[i % capacity].data + " "); // index of array is not more than capacity run like cycle.
                 }   
             System.out.println("[Back]");
         } else {
