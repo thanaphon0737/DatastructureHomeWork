@@ -7,12 +7,12 @@ package homework_group17;
 public class Main {
 
     public static void printNodeKey(Node node) {
-        if(node == null){
+        if (node == null) {
             System.out.println("Node not found.");
-        }else {
-           System.out.println(node.key); 
+        } else {
+            System.out.println(node.key);
         }
-        
+
     }
 
     public static void main(String[] args) {
@@ -26,17 +26,29 @@ public class Main {
         tree.printTree();
 
         Node node = tree.find(3);
-        printNodeKey(node);
+        /*printNodeKey(node);
         node = tree.find(4);
         printNodeKey(node);
-       /* node = tree.findClosest(4);
+        node = tree.findClosest(4);
         printNodeKey(node);
         node = tree.findClosest(3);
         printNodeKey(node);
         node = tree.findClosest(-999);
         printNodeKey(node);
         node = tree.findClosest(999);
+        printNodeKey(node);
+        node = tree.findMin();
+        printNodeKey(node);
+        node = tree.findMax();
         printNodeKey(node);*/
+        //node = node.findNext();
+        //printNodeKey(node);
+        node = tree.find(3);
+        Node node3 = tree.find(7);
+        
+        System.out.println("size of node 7 "+node3.size());
+        
+        printNodeKey(node);
     }
 
 }

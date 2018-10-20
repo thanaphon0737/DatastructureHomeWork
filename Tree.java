@@ -30,7 +30,7 @@ public class Tree extends BTreePrinter {
     }
 
     public static Node find(Node node, int search_key) {
-        if(node == null){
+        if (node == null) {
             return null;
         }
         if (node.key == search_key) {
@@ -39,57 +39,83 @@ public class Tree extends BTreePrinter {
             return find(node.left, search_key);
         } else if (search_key > node.key) {
             return find(node.right, search_key);
-        }else {
+        } else {
             return null;
         }
 
     }
 
     public Node findClosest(int search_key) {
-        if (root.key == search_key) {
-            return root;
-        }
-        if (search_key < root.key) {
-            return root.left;
-        } else {
-            return root.right;
-        }
+        return findClosest(this.root, search_key);
 
     }
 
     public static Node findClosest(Node node, int search_key) {
-        // fix this
-        return null;
+        if (node == null) {
+            return null;
+        }
+        if (search_key == node.key) {
+            return node;
+        } else if (search_key < node.key) {
+            if (findClosest(node.left, search_key) == null) {
+                return node.left;
+            }
+            return findClosest(node.left, search_key);
+        } else if (search_key > node.key) {
+            if (findClosest(node.right, search_key) == null) {
+                return node.right;
+            }
+            return findClosest(node.right, search_key);
+        } else {
+            return null;
+        }
+
     }
 
     public Node findMin() {
         // fix this
-        return null;
+        return findMin(root);
     }
 
     public static Node findMin(Node node) {
         // fix this
-        return null;
+        if (node.left == null) {
+            return node;
+        }
+        return findMin(node.left);
     }
 
     public Node findMax() {
         // fix this 
-        return null;
+        return findMax(root);
     }
 
     public static Node findMax(Node node) {
         // fix this
-        return null;
+        if (node.right == null) {
+            return node;
+        }
+        return findMax(node.right);
     }
 
     public Node findKthSmallest(int k) {
         // fix this
-        return null;
+        return findKthSmallest(root, k);
     }
 
     public static Node findKthSmallest(Node node, int k) {
         // fix this
-        return null;
+        Node leftsubtree = node.left;
+        int L = leftsubtree.size();
+        if (k == L + 1) {
+            return node;
+        }
+        if (k < L + 1) {
+            return findKthSmallest(node.left, k);
+        }
+        if(k > L +1){
+            return findKthSmallest(node.right, k-L-1);
+        }else return null;
     }
 
     public List rangeSearch(int x, int y) {
@@ -131,11 +157,14 @@ public class Tree extends BTreePrinter {
     public void insert(int key) {
         if (root == null) {
             root = new Node(key);
+
         } else {
             if (key < root.key) {
                 root.left = insert(root.left, key);
+                root.left.parent = root;
             } else if (key > root.key) {
                 root.right = insert(root.right, key);
+                root.right.parent = root;
             }
             // do something
             // or
@@ -153,8 +182,10 @@ public class Tree extends BTreePrinter {
         } else {
             if (key < node.key) {
                 node.left = insert(node.left, key);
+                node.left.parent = node;
             } else if (key > node.key) {
                 node.right = insert(node.right, key);
+                node.right.parent = node;
             }
         }
         return node;

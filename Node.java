@@ -14,6 +14,7 @@ public class Node extends BTreePrinter{
         this.key = data;
         this.left = null;
         this.right  = null;
+        this.parent = null;
     }
     
     public int height(){
@@ -73,9 +74,6 @@ public class Node extends BTreePrinter{
 
     }
 
-    public void printTree() {
-        
-         super.printTree(this);
-    }
+    
  
 }
