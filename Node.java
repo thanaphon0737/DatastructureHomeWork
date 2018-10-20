@@ -4,7 +4,7 @@
 */ 
 package homework_group17;
 
-public class Node extends BTreePrinter{
+public class Node {
     Node left;
     Node right;
     Node parent;
@@ -70,8 +70,13 @@ public class Node extends BTreePrinter{
     
     public int depth(Tree tree){ // Node Depth
         // fix this
-        return height();
-
+        int path=0;
+        Node node = this;
+        while(node.parent != null){
+            node = node.parent;
+            path++;
+        }
+        return path;
     }
 
     

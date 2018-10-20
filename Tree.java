@@ -105,8 +105,14 @@ public class Tree extends BTreePrinter {
 
     public static Node findKthSmallest(Node node, int k) {
         // fix this
-        Node leftsubtree = node.left;
-        int L = leftsubtree.size();
+
+        int L;
+        if (node.left == null) {
+            L = 0;
+        } else {
+            L = node.left.size();
+        }
+
         if (k == L + 1) {
             return node;
         }
@@ -118,13 +124,14 @@ public class Tree extends BTreePrinter {
         } else {
             return null;
         }
+
     }
 
     public List rangeSearch(int x, int y) {
         List list = new List(100);
         Node node = findClosest(root, x);
-        while(node.key <= y){
-            if(node.key >= x){
+        while (node.key <= y) {
+            if (node.key >= x) {
                 list.append(node);
             }
             node = node.findNext();
@@ -228,8 +235,13 @@ public class Tree extends BTreePrinter {
         if (root == null) {
             System.out.println("Empty Tree!!!");
         } else if (root.key == key) { // Delete root node
+            Tree rightsubtree = new Tree(root.right);
+            Node node = rightsubtree.findMin();
+            replace(root, node);
+            root.right = rightsubtree.root;
             // delete the root
         } else {
+            delete(root);
             // Recursively delete non-root node
             // or
             System.out.println("Key not found!!!");
