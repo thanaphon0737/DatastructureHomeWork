@@ -113,45 +113,77 @@ public class Tree extends BTreePrinter {
         if (k < L + 1) {
             return findKthSmallest(node.left, k);
         }
-        if(k > L +1){
-            return findKthSmallest(node.right, k-L-1);
-        }else return null;
+        if (k > L + 1) {
+            return findKthSmallest(node.right, k - L - 1);
+        } else {
+            return null;
+        }
     }
 
     public List rangeSearch(int x, int y) {
         List list = new List(100);
-        // do something here
+        Node node = findClosest(root, x);
+        while(node.key <= y){
+            if(node.key >= x){
+                list.append(node);
+            }
+            node = node.findNext();
+        }
         return list;
     }
 
     public void printPreOrderDFT() {
         System.out.print("PreOrder DFT node sequence [ ");
         // something is missing here
+        printPreOrderDFT(root);
         System.out.println("]");
     }
 
     public static void printPreOrderDFT(Node node) {
         // fix this
+        if (node == null) {
+            return;
+        } else {
+            System.out.print(node.key + " ");
+            printPreOrderDFT(node.left);
+            printPreOrderDFT(node.right);
+        }
     }
 
     public void printInOrderDFT() {
         System.out.print("InOrder DFT node sequence [ ");
         // something is missing here
+        printInOrderDFT(root);
         System.out.println("]");
     }
 
     public static void printInOrderDFT(Node node) {
         // fix this
+        if (node == null) {
+            return;
+        } else {
+            printInOrderDFT(node.left);
+            System.out.print(node.key + " ");
+            printInOrderDFT(node.right);
+        }
     }
 
     public void printPostOrderDFT() {
         System.out.print("PostOrder DFT node sequence [ ");
         // something is missing here
+        printPostOrderDFT(root);
         System.out.println("]");
     }
 
     public static void printPostOrderDFT(Node node) {
         // fix this
+        if (node == null) {
+            return;
+        } else {
+            printPostOrderDFT(node.left);
+            printPostOrderDFT(node.right);
+            System.out.print(node.key + " ");
+        }
     }
 
     public void insert(int key) {

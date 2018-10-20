@@ -16,38 +16,21 @@ public class Main {
     }
 
     public static void main(String[] args) {
-
         Tree tree = new Tree();
-        tree.printTree();
         int[] keyList = {5, 3, 1, 2, 7, 9, 10, 8};
         for (int i = 0; i < keyList.length; i++) {
             tree.insert(keyList[i]);
         }
         tree.printTree();
-
-        Node node = tree.find(3);
-        /*printNodeKey(node);
-        node = tree.find(4);
+        Node node = tree.find(4);
         printNodeKey(node);
         node = tree.findClosest(4);
         printNodeKey(node);
-        node = tree.findClosest(3);
+        node = node.findNext();
         printNodeKey(node);
-        node = tree.findClosest(-999);
+        node = node.findNext();
         printNodeKey(node);
-        node = tree.findClosest(999);
-        printNodeKey(node);
-        node = tree.findMin();
-        printNodeKey(node);
-        node = tree.findMax();
-        printNodeKey(node);*/
-        //node = node.findNext();
-        //printNodeKey(node);
-        node = tree.find(3);
-        Node node3 = tree.find(7);
-        
-        System.out.println("size of node 7 "+node3.size());
-        
+        node = node.findNext();
         printNodeKey(node);
     }
 
