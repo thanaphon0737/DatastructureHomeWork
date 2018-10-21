@@ -22,8 +22,8 @@ public class Main {
             tree.insert(keyList[i]);
         }
         tree.printTree();
-        List list = tree.rangeSearch(5, 11);
-        list.printList();
+        Node node = tree.findKthSmallest(9);
+        printNodeKey(node);
        /* Node node = tree.find(9);
         node = node.parent;
         printNodeKey(node);*/

@@ -105,25 +105,27 @@ public class Tree extends BTreePrinter {
 
     public static Node findKthSmallest(Node node, int k) {
         // fix this
+        if(k == 0 || k > node.size()){ // Kth เล็กที่สุด k=1
+            System.out.println("Invalid Kth");
+        }else {
+            int L;
+            if (node.left == null) {
+                L = 0;
+            } else {
+                L = node.left.size();
+            }
 
-        int L;
-        if (node.left == null) {
-            L = 0;
-        } else {
-            L = node.left.size();
-        }
-
-        if (k == L + 1) {
-            return node;
-        }
-        if (k < L + 1) {
-            return findKthSmallest(node.left, k);
-        }
-        if (k > L + 1) {
-            return findKthSmallest(node.right, k - L - 1);
-        } else {
-            return null;
-        }
+            if (k == L + 1) {
+                return node;
+            }
+            if (k < L + 1) {
+                return findKthSmallest(node.left, k);
+            }
+            if (k > L + 1) {
+                return findKthSmallest(node.right, k - L - 1);
+            }
+        }return  null;
+        
 
     }
 
