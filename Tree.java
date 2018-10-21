@@ -81,8 +81,10 @@ public class Tree extends BTreePrinter {
         // fix this
         if (node.left == null) {
             return node;
+        }else {
+           return findMin(node.left); 
         }
-        return findMin(node.left);
+        
     }
 
     public Node findMax() {
@@ -94,8 +96,10 @@ public class Tree extends BTreePrinter {
         // fix this
         if (node.right == null) {
             return node;
+        }else {
+            return findMax(node.right); 
         }
-        return findMax(node.right);
+       
     }
 
     public Node findKthSmallest(int k) {
@@ -105,36 +109,40 @@ public class Tree extends BTreePrinter {
 
     public static Node findKthSmallest(Node node, int k) {
         // fix this
+        if(k <= 0 || k > node.size()){ // Kth เล็กที่สุด k=1
+            System.out.println("Invalid Kth");
+        }else {
+            int L;
+            if (node.left == null) {
+                L = 0;
+            } else {
+                L = node.left.size();
+            }
 
-        int L;
-        if (node.left == null) {
-            L = 0;
-        } else {
-            L = node.left.size();
-        }
-
-        if (k == L + 1) {
-            return node;
-        }
-        if (k < L + 1) {
-            return findKthSmallest(node.left, k);
-        }
-        if (k > L + 1) {
-            return findKthSmallest(node.right, k - L - 1);
-        } else {
-            return null;
-        }
+            if (k == L + 1) {
+                return node;
+            }
+            if (k < L + 1) {
+                return findKthSmallest(node.left, k);
+            }
+            if (k > L + 1) {
+                return findKthSmallest(node.right, k - L - 1);
+            }
+        }return  null;
+        
 
     }
 
     public List rangeSearch(int x, int y) {
         List list = new List(100);
         Node node = findClosest(root, x);
-        while (node.key <= y) {
-            if (node.key >= x) {
-                list.append(node);
-            }
-            node = node.findNext();
+        
+            while (node.key <= y) {
+                if (node.key >= x) {
+                    list.append(node);
+                }
+                node = node.findNext();
+                if(node == null) break;
         }
         return list;
     }
@@ -235,22 +243,82 @@ public class Tree extends BTreePrinter {
         if (root == null) {
             System.out.println("Empty Tree!!!");
         } else if (root.key == key) { // Delete root node
-            Tree rightsubtree = new Tree(root.right);
-            Node node = rightsubtree.findMin();
-            replace(root, node);
-            root.right = rightsubtree.root;
-            // delete the root
+            Node tempNode = root;
+            root.key = findMin(root.right).key;
+            delete(findMin(root.right));
+            
+            
         } else {
-            delete(root);
             // Recursively delete non-root node
-            // or
-            System.out.println("Key not found!!!");
+            if (find(key) != null) {
+                delete(find(key));
+            } else {// or
+                System.out.println("Key not found!!!");
+            }
+
         }
     }
 
     // this function should delete only non-root node
     public static void delete(Node node) {
         // There should be three cases
+        //case 1 
+        if (node.left == null && node.right == null) {
+            if (node.key < node.parent.key) {
+                node.parent.left = null;
+                return;
+            } else if (node.key > node.parent.key) {
+                node.parent.right = null;
+                return;
+            }
+        }
+        //case 2
+        if ((node.left == null || node.right == null)) {
+            if(node.left == null){
+                if (node.key < node.parent.key) {
+                node.parent.left = node.right;
+                node.right.parent = node.parent;
+                return;
+            } else if (node.key > node.parent.key) {
+                node.parent.right = node.right;
+                node.right.parent = node.parent;
+                return;
+            }else if(node.key == node.parent.key){
+                node.parent.right = node.right;
+                node.right.parent = node.parent;
+                return;
+            }
+            }else if(node.right == null){
+                if (node.key < node.parent.key) {
+                node.parent.left = node.left;
+                node.left.parent = node.parent;
+                return;
+            } else if (node.key > node.parent.key) {
+                node.parent.right = node.left;
+                node.left.parent = node.parent;
+                return;
+            }
+            }
+            
+        }
+        //case3
+        if (node.left != null && node.right != null) {
+            if(node.key < node.parent.key){
+                Node tempNode = findMin(node);
+                node.parent.left = tempNode;
+                tempNode.parent = node.parent;
+                tempNode.right = node.right;
+                node.right.parent = tempNode;
+            }else if(node.key > node.parent.key){
+                Node tempNode = findMin(node);
+                node.parent.right = tempNode;
+                tempNode.parent = node.parent;
+                tempNode.right = node.right;
+                node.right.parent = tempNode;
+            }
+            
+            
+        }
     }
 
     // Replace node1 with a new node2

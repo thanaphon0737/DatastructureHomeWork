@@ -1,84 +1,92 @@
 /* HW6
  * Due: 21 October 2018
  * Problem Header Hash Code: 72768a5124c7d61e8573f7c39c398e64
-*/ 
+ */
 package homework_group17;
 
 public class Node {
+
     Node left;
     Node right;
     Node parent;
     int key;
-    
-    public Node(int data){
+
+    public Node(int data) {
         this.key = data;
         this.left = null;
-        this.right  = null;
+        this.right = null;
         this.parent = null;
     }
-    
-    public int height(){
+
+    public int height() {
         return height(this); // fix this with a single line
     }
-    
-    public static int height(Node node){
-        if(node == null){
+
+    public static int height(Node node) {
+        if (node == null) {
             return -1;
-        }else{
-            return 1 + Math.max(height(node.left),height(node.right));
-            
+        } else {
+            return 1 + Math.max(height(node.left), height(node.right));
+
         }
     }
 
-    public int size(){
+    public int size() {
         return size(this); // fix this
     }
-    
-    public static int size(Node node){
+
+    public static int size(Node node) {
         // fix this
-        if(node == null){
+        if (node == null) {
             return 0;
-        }else {
-            return(size(node.left)+ 1 + size(node.right));
+        } else {
+            return (size(node.left) + 1 + size(node.right));
         }
-        
+
     }
-    
-    public Node findNext(){
+
+    public Node findNext() {
         //fix this
-        if(this.right != null){
-            return leftDescendant(this.right);
-        }else
-            return rightAncestor(this);
+        return findNext(this);
     }
-    
-    public static Node leftDescendant(Node node){// Case 1
+    public static Node findNext(Node node) {
+        if (node.right != null) {
+            return leftDescendant(node.right);
+        } else {
+            return rightAncestor(node);
+        }
+    }
+
+    public static Node leftDescendant(Node node) {// Case I
         // fix this
-        if(node.left == null){
+        if (node.left == null) {
             return node;
-        }else
+        } else {
             return leftDescendant(node.left);
+        }
     }
-    
-    public static Node rightAncestor(Node node) {// Case 1
+
+    public static Node rightAncestor(Node node) {// Case II
         // fix this
-        if(node.key < node.parent.key){
+        if(node.parent == null){
+            return null;
+        }
+        if (node.key < node.parent.key) {
             return node.parent;
-        }else
+        } else {
             return rightAncestor(node.parent);
+        }
     }
-    
-    public int depth(Tree tree){ // Node Depth
+
+    public int depth(Tree tree) { // Node Depth
         // fix this
-        int path=0;
+        int path = 0;
         Node node = this;
-        while(node.parent != null){
+        while (node.parent != null) {
             node = node.parent;
             path++;
         }
         return path;
     }
 
-    
- 
 }
