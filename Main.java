@@ -17,24 +17,28 @@ public class Main {
 
     public static void main(String[] args) {
         Tree tree = new Tree();
-        int[] keyList = {5, 2, 3, 9, 1, 10, 8, 7};
+        int[] keyList = {5, 3, 1, 2, 7, 9, 10, 8};
         for (int i = 0; i < keyList.length; i++) {
             tree.insert(keyList[i]);
         }
         tree.printTree();
-        System.out.println(tree.depth());
-        System.out.println(tree.height());
-        Node node = tree.find(9);
-        System.out.println(node.depth(tree));
-        System.out.println(node.height());
-        node = tree.findMax();
-        printNodeKey(node);
-        node = tree.findMin();
-        printNodeKey(node);
-        node = tree.findKthSmallest(6);
-        printNodeKey(node);
-        node = tree.findKthSmallest(3);
-        printNodeKey(node);
+        List list = tree.rangeSearch(5, 11);
+        list.printList();
+       /* Node node = tree.find(9);
+        node = node.parent;
+        printNodeKey(node);*/
+        /*System.out.println("----------------");
+        tree.delete(7);
+        tree.printTree();
+        System.out.println("----------------");
+        tree.delete(3);
+        tree.printTree();
+        tree.delete(9);
+        tree.delete(1);
+        tree.delete(5);
+        tree.delete(5);
+        System.out.println("----------------");
+        tree.printTree();*/
     }
 
 }

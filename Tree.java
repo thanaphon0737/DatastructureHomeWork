@@ -130,11 +130,13 @@ public class Tree extends BTreePrinter {
     public List rangeSearch(int x, int y) {
         List list = new List(100);
         Node node = findClosest(root, x);
-        while (node.key <= y) {
-            if (node.key >= x) {
-                list.append(node);
-            }
-            node = node.findNext();
+        
+            while (node.key <= y) {
+                if (node.key >= x) {
+                    list.append(node);
+                }
+                node = node.findNext();
+                if(node == null) break;
         }
         return list;
     }
@@ -235,22 +237,64 @@ public class Tree extends BTreePrinter {
         if (root == null) {
             System.out.println("Empty Tree!!!");
         } else if (root.key == key) { // Delete root node
+            Node templeft = root.left;
             Tree rightsubtree = new Tree(root.right);
-            Node node = rightsubtree.findMin();
-            replace(root, node);
-            root.right = rightsubtree.root;
-            // delete the root
+
+            Node tempright = root.right;
+            root.left = root.right = null;
+
+            root = new Node(rightsubtree.findMin().key);
+            root.left = templeft;
+            root.right = tempright;
+            root.left.parent = root;
+            root.right.parent = root;
+
+            if (rightsubtree.findMin().left != null) {
+                rightsubtree.findMin().left.parent = root.right;
+            }
+            rightsubtree.findMin().parent.left = null;
+
         } else {
-            delete(root);
             // Recursively delete non-root node
-            // or
-            System.out.println("Key not found!!!");
+            if (find(key) != null) {
+                delete(find(key));
+            } else {// or
+                System.out.println("Key not found!!!");
+            }
+
         }
     }
 
     // this function should delete only non-root node
     public static void delete(Node node) {
         // There should be three cases
+        //case 1 
+        if (node.left == null && node.right == null) {
+            if (node.key < node.parent.key) {
+                node.parent.left = null;
+            } else if (node.key > node.parent.key) {
+                node.parent.right = null;
+            }
+        }
+        //case 2
+        if (node.left == null || node.right == null) {
+            if (node.key < node.parent.key) {
+                node.parent.left = node.left;
+            } else if (node.key > node.parent.key) {
+                node.parent.right = node.right;
+            }
+        }
+        //case3
+        if (node.left != null && node.right != null) {
+            Tree rightsubtree = new Tree(node);
+            Node node2 = new Node(rightsubtree.findMin().key);
+            replace(node, node2);
+
+            node.left.parent = node2;
+            node.right.parent = node2;
+            rightsubtree.findMin().parent = node2.right;
+            rightsubtree.findMin().parent.left = null;
+        }
     }
 
     // Replace node1 with a new node2
