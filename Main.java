@@ -21,13 +21,10 @@ public class Main {
         for (int i = 0; i < keyList.length; i++) {
             tree.insert(keyList[i]);
         }
+
+        
         tree.printTree();
-        Node node = tree.findKthSmallest(9);
-        printNodeKey(node);
-       /* Node node = tree.find(9);
-        node = node.parent;
-        printNodeKey(node);*/
-        /*System.out.println("----------------");
+        System.out.println("----------------");
         tree.delete(7);
         tree.printTree();
         System.out.println("----------------");
@@ -35,10 +32,14 @@ public class Main {
         tree.printTree();
         tree.delete(9);
         tree.delete(1);
+        //Node node = tree.find(1);
+        //printNodeKey(node.parent);
         tree.delete(5);
         tree.delete(5);
         System.out.println("----------------");
-        tree.printTree();*/
+        tree.printTree();
+        Node node = tree.find(tree.root.key);
+        printNodeKey(node.left.parent);
     }
 
 }

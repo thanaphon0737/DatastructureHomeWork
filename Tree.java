@@ -81,8 +81,10 @@ public class Tree extends BTreePrinter {
         // fix this
         if (node.left == null) {
             return node;
+        }else {
+           return findMin(node.left); 
         }
-        return findMin(node.left);
+        
     }
 
     public Node findMax() {
@@ -94,8 +96,10 @@ public class Tree extends BTreePrinter {
         // fix this
         if (node.right == null) {
             return node;
+        }else {
+            return findMax(node.right); 
         }
-        return findMax(node.right);
+       
     }
 
     public Node findKthSmallest(int k) {
@@ -105,7 +109,7 @@ public class Tree extends BTreePrinter {
 
     public static Node findKthSmallest(Node node, int k) {
         // fix this
-        if(k == 0 || k > node.size()){ // Kth เล็กที่สุด k=1
+        if(k <= 0 || k > node.size()){ // Kth เล็กที่สุด k=1
             System.out.println("Invalid Kth");
         }else {
             int L;
@@ -239,23 +243,13 @@ public class Tree extends BTreePrinter {
         if (root == null) {
             System.out.println("Empty Tree!!!");
         } else if (root.key == key) { // Delete root node
-            Node templeft = root.left;
-            Tree rightsubtree = new Tree(root.right);
-
-            Node tempright = root.right;
-            root.left = root.right = null;
-
-            root = new Node(rightsubtree.findMin().key);
-            root.left = templeft;
-            root.right = tempright;
-            root.left.parent = root;
-            root.right.parent = root;
-
-            if (rightsubtree.findMin().left != null) {
-                rightsubtree.findMin().left.parent = root.right;
-            }
-            rightsubtree.findMin().parent.left = null;
-
+            Node temproot = this.root;
+            
+            root = findMin(root.right);
+            root.parent = temproot;
+            temproot.left.parent = root;
+            root.left = temproot.left;
+            
         } else {
             // Recursively delete non-root node
             if (find(key) != null) {
@@ -280,22 +274,41 @@ public class Tree extends BTreePrinter {
         }
         //case 2
         if (node.left == null || node.right == null) {
-            if (node.key < node.parent.key) {
-                node.parent.left = node.left;
+            if(node.left == null){
+                if (node.key < node.parent.key) {
+                node.parent.left = node.right;
+                node.right.parent = node.parent;
             } else if (node.key > node.parent.key) {
                 node.parent.right = node.right;
+                node.right.parent = node.parent;
             }
+            }else if(node.right == null){
+                if (node.key < node.parent.key) {
+                node.parent.left = node.left;
+                node.left.parent = node.parent;
+            } else if (node.key > node.parent.key) {
+                node.parent.right = node.left;
+                node.left.parent = node.parent;
+            }
+            }
+            
         }
         //case3
         if (node.left != null && node.right != null) {
-            Tree rightsubtree = new Tree(node);
-            Node node2 = new Node(rightsubtree.findMin().key);
-            replace(node, node2);
-
-            node.left.parent = node2;
-            node.right.parent = node2;
-            rightsubtree.findMin().parent = node2.right;
-            rightsubtree.findMin().parent.left = null;
+            if(node.key < node.parent.key){
+                Node node2 = new Node(findMin(node).key);
+                replace(node, node2);
+                node2.parent.left = node2.left;
+                
+            }else if(node.key > node.parent.key){
+                Node node2 = new Node(findMin(node).key);
+                replace(node, node2);
+                node.parent.right = node2.left;
+                node.parent.right.right = node.right;
+                
+            }
+            
+            
         }
     }
 
