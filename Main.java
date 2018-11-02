@@ -21,29 +21,28 @@ public class Main {
         tree = generateTree1();
         tree.printTree();
 
-        System.out.println("---- Test1 singleRotateFromLeft at Lv 3 ----");
-        tree.singleRotateFromLeft(tree.find(6));
-        tree.singleRotateFromLeft(tree.find(2));
+        System.out.println("---- Test7 doubleRotateFromRight at Lv 1 ----");
+        tree.doubleRotateFromRight(tree.find(8));
         tree.printTree();
-        System.out.println("---- Test2 singleRotateFromRight at Lv 3 ----");
+        System.out.println("---- Test8 doubleRotateFromLeft at Lv 1 ----");
         tree = generateTree1();
-        tree.singleRotateFromRight(tree.find(10));
-        tree.singleRotateFromRight(tree.find(14));
+        tree.doubleRotateFromLeft(tree.find(8));
         tree.printTree();
-        System.out.println("---- Test3 singleRotateFromLeft at Lv 2 ----");
+        System.out.println("---- Test9.1 doubleRotateFromLeft at Lv 2 ----");
         tree = generateTree1();
-        tree.singleRotateFromLeft(tree.find(4));
+        tree.doubleRotateFromLeft(tree.find(4));
         tree.printTree();
-        System.out.println("---- Test4 singleRotateFromRight at Lv 2 ----");
+        System.out.println("---- Test9.2 doubleRotateFromLeft at Lv 2 ----");
         tree = generateTree1();
-        tree.singleRotateFromRight(tree.find(12));
+        tree.doubleRotateFromLeft(tree.find(12));
         tree.printTree();
-        System.out.println("---- Test5 singleRotateFromLeft at Lv 1 ----");
-        tree.singleRotateFromLeft(tree.find(8));
+        System.out.println("---- Test10.1 doubleRotateFromRight at Lv 2 ----");
+        tree = generateTree1();
+        tree.doubleRotateFromRight(tree.find(4));
         tree.printTree();
-        System.out.println("---- Test6 singleRotateFromRight at Lv 1 ----");
-        tree.singleRotateFromRight(tree.find(8));
+        System.out.println("---- Test10.2 doubleRotateFromRight at Lv 2 ----");
+        tree = generateTree1();
+        tree.doubleRotateFromRight(tree.find(12));
         tree.printTree();
-
     }
 }

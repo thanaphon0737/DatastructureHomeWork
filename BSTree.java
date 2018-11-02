@@ -95,52 +95,83 @@ public class BSTree extends BTreePrinter {
         // Do something
 
         Node x = y.left;
-        if (y.parent == null) {
-            Node yTemp = y;
-            x.parent = y.parent;
-        } else if (y.parent.left == y) {
-            y.parent.left = x;
-            x.parent = y.parent.left;
-        } else if (y.parent.right == y) {
-            y.parent.right = x;
-            x.parent = y.parent.right;
-        }
-        y.parent = x;
-        y.left = x.right;
-        if (x.right != null) {
-            x.right.parent = y;
+        if (y == root) {// Is Root
+            
+            if(x.right != null){
+                x.right.parent = y;
+            }
+            y.left = x.right;
+            y.parent = x;
+            x.right = y;
+            
+            root = x;
+        } else {
+            // not root
+            if (y.parent.left == y) {
+                y.parent.left = x;
+                x.parent = y.parent.left;
+            } else if (y.parent.right == y) {
+                y.parent.right = x;
+                x.parent = y.parent.right;
+            }
+            y.parent = x;
+            y.left = x.right;
+            if (x.right != null) {
+                x.right.parent = y;
+            }
+
+            x.right = y;
         }
 
-        x.right = y;
     }
 
     public void singleRotateFromRight(Node y) {
         // Do something
         Node x = y.right;
-        if (y.parent == null) {
+        if(y==root){// Is root
+            if(x.left != null){
+                x.left.parent = y;
+            }
+            y.right = x.left;
             y.parent = x;
-            x.parent = y.parent;
-        } else if (y.parent.left == y) {
-            y.parent.left = x;
-            x.parent = y.parent.left;
-        } else if (y.parent.right == y) {
-            y.parent.right = x;
-            x.parent = y.parent.right;
+            x.left = y;
+            root = x;
+        }else {
+            if (y.parent == null) {// that root
+                y.parent = x;
+                x.parent = y.parent;
+            } else if (y.parent.left == y) {
+                y.parent.left = x;
+                x.parent = y.parent.left;
+            } else if (y.parent.right == y) {
+                y.parent.right = x;
+                x.parent = y.parent.right;
+            }
+            y.parent = x;
+            y.right = x.left;
+            if (x.left != null) {
+                x.left.parent = y;
+            }
+            x.left = y; 
         }
-        y.parent = x;
-        y.right = x.left;
-        if (x.left != null) {
-            x.left.parent = y;
-        }
-        x.left = y;
+        
     }
 
     public void doubleRotateFromLeft(Node y) {
         // Do something
+        Node x = y.left;
+        Node z = x.right;
+        singleRotateFromRight(x);
+        singleRotateFromLeft(y);
+        
     }
 
     public void doubleRotateFromRight(Node y) {
         // Do something
+        Node x = y.right;
+        Node z = x.left;
+        singleRotateFromLeft(x);
+        singleRotateFromRight(y);
     }
 
     // You should have "root node deletion" in this function
