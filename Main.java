@@ -17,21 +17,33 @@ public class Main {
 
     public static void main(String[] args) {
 
-        AVLTree tree = new AVLTree();
-        int[] keyList = {51, 30, 69, 18, 42, 63, 87, 12, 24, 36, 45, 57, 66, 81,
-            93, 15, 21, 27, 33, 39, 48, 54, 60, 75, 84, 90, 96, 72, 78};
-        for (int i = 0; i < keyList.length; i++) {
-            tree.insert(keyList[i]);
+        BSTree tree1 = new BSTree();
+        long start = System.currentTimeMillis();
+        int N = 13000;
+        for (int i = 0; i < N; i++) {
+            tree1.insert(i);
         }
-        //tree.printTree();
-        tree.insert(73); // must perform SingleRotationFromLeft(Node 81)
-        //tree.printTree();
-        tree.insert(77); // must perform DoubleRotationFromLeft(Node 87)
-        tree.insert(76); // must perform SingleRotationFromLeft(Node 78)
-        tree.insert(80); // must perform DoubleRotationFromRight(Node 69)
-        tree.insert(74); // must perform SingleRotationFromRight(Node 72)
-        tree.insert(64); // do nothing
-        tree.insert(55); // must perform SingleRotationFromLeft(Node 69)
-        tree.insert(70); // must perform DoubleRotationFromRight(Node 51)
+        System.out.println("Time for sequentially inserting " + N
+                + " objects into BST = " + (System.currentTimeMillis() - start) + " msec");
+        start = System.currentTimeMillis();
+        for (int i = 0; i < N; i++) {
+            tree1.find((int) (Math.random() * (N / 10)));
+        }
+        System.out.println("Time for finding " + (N / 10)
+                + " different objects in BST= " + (System.currentTimeMillis() - start) + " msec");
+        SplayTree tree2 = new SplayTree();
+        start = System.currentTimeMillis();
+        for (int i = 0; i < N; i++) {
+            tree2.insert(i);
+        }
+        System.out.println("Time for sequentially inserting " + N
+                + " objects into SplayTree = " + (System.currentTimeMillis() - start) + " msec");
+        start = System.currentTimeMillis();
+        for (int i = 0; i < N; i++) {
+            tree2.find((int) (Math.random() * (N / 10)));
+        }
+        System.out.println("Time for finding " + (N / 10)
+                + " different objects in SplayTree = " + (System.currentTimeMillis() - start) + " msec");
     }
+
 }

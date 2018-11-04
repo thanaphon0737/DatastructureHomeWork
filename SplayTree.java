@@ -1,43 +1,50 @@
 /* HW7
  * Due: 5 November 2018
  * Problem Header Hash Code: 355a88089e03b21a427e11aed9924786
-*/ 
-
+ */
 package hw7_group17;
 
-public class SplayTree extends BTreePrinter{
+public class SplayTree extends BTreePrinter {
+
     Node root;
-    
-    public SplayTree(){
-        
+
+    public SplayTree() {
+
     }
-    
-    public SplayTree(Node root){
-        
-        if (root.parent!=null){ // To make sure the root has no parent
-            if (root.key < root.parent.key){
+
+    public SplayTree(Node root) {
+
+        if (root.parent != null) { // To make sure the root has no parent
+            if (root.key < root.parent.key) {
                 root.parent.left = null;
-            }else{
+            } else {
                 root.parent.right = null;
             }
             root.parent = null;
         }
         this.root = root;
     }
-    
-    public void printTree(){
+
+    public void printTree() {
         super.printTree(root);
     }
-    
+
     public Node find(int search_key) {
-        return root; // fix this
+        Node current = findWithoutSplaying(search_key);
+        Node nodeKey = findWithoutSplaying(search_key);
+        while(current != null){
+            splay(nodeKey);
+            current = current.parent;
+        }
+        
+        return findWithoutSplaying(search_key); // fix this
     }
 
     // This function is already complete, no need to modify
     public Node findWithoutSplaying(int search_key) {
         return find(root, search_key);
     }
-    
+
     // This function is already complete, no need to modify
     private static Node find(Node node, int search_key) {
         if (search_key == node.key) {
@@ -50,7 +57,7 @@ public class SplayTree extends BTreePrinter{
             return null;
         }
     }
-    
+
     // This function is already complete, no need to modify
     private Node findMin() {
         return findMin(root);
@@ -64,7 +71,7 @@ public class SplayTree extends BTreePrinter{
             return findMin(node.left);
         }
     }
-    
+
     // This function is already complete, no need to modify
     public void insert(int key) {
         if (root == null) {
@@ -82,20 +89,34 @@ public class SplayTree extends BTreePrinter{
             if (node.left == null) {
                 node.left = new Node(key);
                 node.left.parent = node;
+                Node current = node.left;
+                Node nodeKey = node.left;
+                while (current != null) {
+                    tree.splay(nodeKey);
+                    current = current.parent;
+                }
+
             } else {
                 insert(tree, node.left, key);
             }
-        } else{ // Go right
+        } else { // Go right
             if (node.right == null) {
                 node.right = new Node(key);
                 node.right.parent = node;
+                Node current = node.right;
+                Node nodeKey = node.right;
+                while (current != null) {
+                    tree.splay(nodeKey);
+                    current = current.parent;
+
+                }
+
             } else {
                 insert(tree, node.right, key);
             }
         }
     }
-    
-    
+
     public void delete(int key) {
         // To delete a key in a splay tree, do the following steps
         // 1. splay node with the key to the root of tree1
@@ -103,27 +124,55 @@ public class SplayTree extends BTreePrinter{
         // 3. Find min of the right-subtree and splay to the root
         // 4. Take left-subtree of the tree1 and hang as the left subtree of the tree2
         // 5. Reassign a new root (root of the tree2)
+        delete(this, root, key);
+
     }
-    
+
+    public static void delete(SplayTree tree, Node node, int key) {
+        if (node.key == key) {
+            tree.splay(node);
+            Node r1 = node.left;
+            Node r2 = node.right;
+            SplayTree treeNew = new SplayTree();
+            treeNew.root = r2;
+            treeNew.splay(findMin(treeNew.root));
+            treeNew.root.left = r1;
+            treeNew.root.right = r2;
+            tree.root = treeNew.root;
+        } else if (key < node.key) {
+            delete(tree, node.left, key);
+        } else if (key > node.key) {
+            delete(tree, node.right, key);
+        } else {
+            System.out.println("Error");
+        }
+
+    }
+
     // Use this function to call zigzig or zigzag
-    public void splay(Node node){
-        if (node!=null && node != root){
-            if (node.parent == root){
+    public void splay(Node node) {
+        if (node != null && node != root) {
+            if (node.parent == root) {
                 // Do something (just add one line of code)
-            }else{
-                if (node.key < node.parent.key){
-                    if (node.parent.key < node.parent.parent.key){
+                zig(node);
+            } else {
+                if (node.key < node.parent.key) {
+                    if (node.parent.key < node.parent.parent.key) {
                         // Left outer case
                         // Do something (just add one line of code)
-                    }else{
+                        zigzig(node);
+                    } else {
                         // Left inner case
+                        zigzag(node);
                         // Do something (just add one line of code)
                     }
-                }else{
-                    if (node.parent.key > node.parent.parent.key){
+                } else {
+                    if (node.parent.key > node.parent.parent.key) {
                         // Right outer case
+                        zigzig(node);
                         // Do something (just add one line of code)
-                    }else{
+                    } else {
+                        zigzag(node);
                         // Do something (just add one line of code)
                     }
                 }
@@ -131,32 +180,65 @@ public class SplayTree extends BTreePrinter{
             }
         }
     }
-    
+
     // Use this function to call zig
-    public void zigzig(Node node){ // Move two nodes up along the Outer path
+    public void zigzig(Node node) { // Move two nodes up along the Outer path
         // Do something
+        zig(node.parent);
+        zig(node);
     }
-    
+
     // Use this funciton to call zig
-    public void zigzag(Node node){ // Move two nodes up along the Inner path
+    public void zigzag(Node node) { // Move two nodes up along the Inner path
         // Do something
+        zig(node);
+        zig(node);
     }
-    
+
     // This function should be called by zigzig or zigzag
-    public void zig(Node node){// Move up one step
-        if (node.parent == null){
+    public void zig(Node node) {// Move up one step
+        if (node.parent == null) {
             System.out.println("Cannot perform Zig operation on the root node");
-        }else if (node.parent == root){ // If the node is a child of the root
-            if (node.key<node.parent.key){// Zig from left
+        } else if (node.parent == root) { // If the node is a child of the root
+            if (node.key < node.parent.key) {// Zig from left
                 // Do something
-            }else{ // Zig from right
+                Node x = node;
+                Node y = node.parent;
+                if (x.right != null) {
+                    x.right.parent = y;
+                }
+                y.left = x.right;
+                y.parent = x;
+                x.right = y;
+
+                root = x;
+                x.parent = null;
+
+            } else { // Zig from right
                 // Do something
+                Node x = node;
+                Node y = node.parent;
+                if (x.left != null) {
+                    x.left.parent = y;
+                }
+                y.right = x.left;
+                y.parent = x;
+                x.left = y;
+
+                root = x;
+                x.parent = null;
             }
-        }else{// if the node is not a child of the root
-            if (node.key<node.parent.key){// Zig from left
+        } else {// if the node is not a child of the root
+            if (node.key < node.parent.key) {// Zig from left
                 // Do something
-            }else{
+                AVLTree tree = new AVLTree();
+                tree.root = root;
+                tree.singleRotateFromLeft(node.parent);
+            } else {// Zig from left
                 // Do something
+                AVLTree tree = new AVLTree();
+                tree.root = root;
+                tree.singleRotateFromRight(node.parent);
             }
         }
     }

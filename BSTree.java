@@ -4,6 +4,8 @@
  */
 package hw7_group17;
 
+import java.util.ArrayList;
+
 public class BSTree extends BTreePrinter {
 
     Node root;
@@ -105,6 +107,7 @@ public class BSTree extends BTreePrinter {
             x.right = y;
 
             root = x;
+            x.parent = null;
         } else {
             // not root
             if (y.parent.left == y) {
@@ -136,6 +139,7 @@ public class BSTree extends BTreePrinter {
             y.parent = x;
             x.left = y;
             root = x;
+            x.parent = null;
         } else {
             // not root
             if (y.parent.left == y) {
@@ -258,11 +262,36 @@ public class BSTree extends BTreePrinter {
         }
     }
 
-    public static boolean isMergeable(Node r1, Node r2) {
-        if (Node.size(r1) < Node.size(r2)) {
-            return true;
+    public static ArrayList<Integer> storeInorder(Node node) {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+
+        if (node == null) {
+            return list;
         }
-        return false;
+
+        //recur on the left child 
+        storeInorder(node.left);
+
+        // Adds data to the list 
+        list.add(node.key);
+        //recur on the right child 
+        storeInorder(node.right);
+
+        return list;
+    }
+
+    public static boolean isMergeable(Node r1, Node r2) {
+        int m = Math.max(storeInorder(r1).size(), storeInorder(r2).size());
+        int n = Math.min(storeInorder(r1).size(), storeInorder(r2).size());
+        for(int i =0;i<n ;i++){
+            for(int j =0; j <m; j++){
+                if(storeInorder(r1).get(j) > storeInorder(r2).get(j)){
+                    return false;
+                } 
+            }
+        }
+        
+        return true;
     }
 
     public static Node mergeWithRoot(Node r1, Node r2, Node t) {
@@ -270,8 +299,11 @@ public class BSTree extends BTreePrinter {
             // Fix this
             t.left = r1;
             t.right = r2;
-            r1.parent = t;
-            r2.parent = t;
+            if(r1 != null && r2 != null){
+                r1.parent = t;
+                r2.parent = t; 
+            }
+            
             return t;
         } else {
             System.out.println("All nodes in T1 must be smaller than all nodes from T2");
@@ -282,8 +314,8 @@ public class BSTree extends BTreePrinter {
     public void merge(BSTree tree2) {
         if (isMergeable(this.root, tree2.root)) {
             Node t = findMax(this.root);
-            delete(t.key);
-            mergeWithRoot(this.root, tree2.root, t);
+            this.delete(t.key);
+            root = mergeWithRoot(this.root, tree2.root, t);
 
         } else {
             System.out.println("All nodes in T1 must be smaller than all nodes from T2");
@@ -292,18 +324,20 @@ public class BSTree extends BTreePrinter {
     }
 
     public NodeList split(int key) {
-        return new NodeList(); // This is incorrect, fix this by calling static split
+        return  split(this.root, key); // This is incorrect, fix this by calling static split
     }
 
     public static NodeList split(Node r, int key) {
-        NodeList list = new NodeList();
         if (r == null) {
-            return list;
+            return new NodeList();
         } else if (key < r.key) {
+            NodeList list;
+
             list = split(r.left, key);
             list.r2 = mergeWithRoot(list.r2, r.right, r);
             return list;
         } else { // key>=root.key
+            NodeList list;
             list = split(r.right, key);
             list.r1 = mergeWithRoot(r.left, list.r1, r);
             return list;

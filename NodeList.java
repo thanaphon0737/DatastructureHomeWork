@@ -8,7 +8,8 @@ package hw7_group17;
 public class NodeList {
     public Node r1;
     public Node r2;
-    NodeList(){
 
+    NodeList(){
+        
     }
 }

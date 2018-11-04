@@ -5,6 +5,8 @@
 package hw7_group17;
 
 import com.sun.scenario.effect.impl.Renderer;
+import java.util.ArrayList;
+import javax.accessibility.AccessibleRole;
 
 public class AVLTree extends BTreePrinter {
 
@@ -85,8 +87,10 @@ public class AVLTree extends BTreePrinter {
                 node.left = new Node(key);
                 node.left.parent = node;
                 while ((!(node.isImbalance())) && node.parent != null) {
-                        node = node.parent;
-                        if(node == tree.root) break;
+                    node = node.parent;
+                    if (node == tree.root) {
+                        break;
+                    }
                 }
                 rebalance(tree, node);
             } else {
@@ -97,8 +101,10 @@ public class AVLTree extends BTreePrinter {
                 node.right = new Node(key);
                 node.right.parent = node;
                 while ((!(node.isImbalance())) && node.parent != null) {
-                        node = node.parent;
-                        if(node == tree.root) break;
+                    node = node.parent;
+                    if (node == tree.root) {
+                        break;
+                    }
                 }
                 rebalance(tree, node);
             } else {
@@ -160,6 +166,7 @@ public class AVLTree extends BTreePrinter {
             x.right = y;
 
             root = x;
+            x.parent = null;
         } else {
             // not root
             if (y.parent.left == y) {
@@ -190,6 +197,7 @@ public class AVLTree extends BTreePrinter {
             y.parent = x;
             x.left = y;
             root = x;
+            x.parent = null;
         } else {
             //not root
             if (y.parent.left == y) {
@@ -233,7 +241,7 @@ public class AVLTree extends BTreePrinter {
         } else if (root.key == key) { // Delete root node
             if ((root.left == null) && (root.right == null)) { // Case 1 (leaf node)
                 root = null;
-                rebalance(this, root);
+
             } else if ((root.left != null) && (root.right != null)) { // Case 3 (full node)
                 Node minRightSubTree = findMin(root.right);
                 Node temp = new Node(minRightSubTree.key);
@@ -241,15 +249,15 @@ public class AVLTree extends BTreePrinter {
                 root = temp;
                 // recursively delete the node
                 delete(this, root.right, minRightSubTree.key);
-                rebalance(this, root);
+
             } else if (root.left != null) { // Case 2 (single child, left child)
                 root.left.parent = null; // make left child the root
                 root = root.left;
-                rebalance(this, root);
+
             } else { // Case 2 (single child, right child)
                 root.right.parent = null; // make right child the root
                 root = root.right;
-                rebalance(this, root);
+
             }
         } else { // Delete non-root node
             delete(this, root, key);
@@ -265,8 +273,24 @@ public class AVLTree extends BTreePrinter {
             System.out.println("Key not found!!!");
         } else if (node.key > key) { // Go left
             delete(tree, node.left, key);
+            while ((!(node.isImbalance())) && node.parent != null) {
+                node = node.parent;
+                if (node == tree.root) {
+                    break;
+                }
+            }
+            rebalance(tree, node);
+
         } else if (node.key < key) { // Go right
             delete(tree, node.right, key);
+            while ((!(node.isImbalance())) && node.parent != null) {
+                node = node.parent;
+                if (node == tree.root) {
+                    break;
+                }
+            }
+            rebalance(tree, node);
+
         } else if (node.key == key) { // Node to be deleted is found
             if ((node.left == null) && (node.right == null)) { // Case 1(leaf node)
                 if (node.key < node.parent.key) {
@@ -280,6 +304,7 @@ public class AVLTree extends BTreePrinter {
                 replace(node, temp);
                 // recursively delete the node
                 delete(tree, node.right, minRightSubTree.key);
+
             } else {// Case 2 (single child)
                 Node childNode;
                 if (node.left != null) {  // only the left child
@@ -319,29 +344,87 @@ public class AVLTree extends BTreePrinter {
         }
     }
 
-    public static boolean isMergeable(Node r1, Node r2) {
-        if (Node.size(r1) < Node.size(r2)) {
-            return true;
+    public static ArrayList<Integer> storeInorder(Node node) {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+
+        if (node == null) {
+            return list;
         }
-        return false;// Fix this (just copy the code from BSTree)
+
+        //recur on the left child 
+        storeInorder(node.left);
+
+        // Adds data to the list 
+        list.add(node.key);
+        //recur on the right child 
+        storeInorder(node.right);
+
+        return list;
+    }
+
+    public static boolean isMergeable(Node r1, Node r2) {
+        int m = Math.max(storeInorder(r1).size(), storeInorder(r2).size());
+        int n = Math.min(storeInorder(r1).size(), storeInorder(r2).size());
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (storeInorder(r1).get(j) > storeInorder(r2).get(j)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     public static Node mergeWithRoot(Node r1, Node r2, Node t) {
         if (isMergeable(r1, r2)) {
             // Do something
             // Do not forget to rebalance
-            t.left = r1;
-            t.right = r2;
-            r1.parent = t;
-            r2.parent = t;
+            if (Math.abs(Node.height(r1) - Node.height(r2)) <= 1) {
+                t.left = r1;
+                t.right = r2;
+                if (r1 != null && r2 != null) {
+                    r1.parent = t;
+                    r2.parent = t;
+                }
 
-            return t;
-
+                return t;
+            } else if (Node.height(r1) > Node.height(r2)) {
+                AVLTree tree = new AVLTree();
+                tree.root = r1;
+                Node rP = mergeWithRoot(r1.right, r2, t);
+                r1.right = rP;
+                rP.parent = r1;
+                Node checknode = rP;
+                while ((!(checknode.isImbalance())) && checknode.parent != null) {
+                    checknode = checknode.parent;
+                    if (rP == tree.root) {
+                        break;
+                    }
+                }
+                rebalance(tree, r1);
+                return tree.root;
+            } else if (Node.height(r1) < Node.height(r2)) {
+                AVLTree tree = new AVLTree();
+                tree.root = r1;
+                Node rP = mergeWithRoot(r1.left, r2, t);
+                r1.left = rP;
+                rP.parent = r1;
+                while ((!(rP.isImbalance())) && rP.parent != null) {
+                    rP = rP.parent;
+                    if (rP == tree.root) {
+                        break;
+                    }
+                }
+                rebalance(tree, r1);
+                return tree.root;
+            }
             // fix this
         } else {
             System.out.println("All nodes in T1 must be smaller than all nodes from T2");
             return null;
         }
+        return null;
     }
 
     public void merge(AVLTree tree2) {
@@ -349,7 +432,7 @@ public class AVLTree extends BTreePrinter {
             // do something
             Node t = findMax(this.root);
             delete(t.key);
-            mergeWithRoot(this.root, tree2.root, t);
+            root = mergeWithRoot(this.root, tree2.root, t);
         } else {
             System.out.println("All nodes in T1 must be smaller than all nodes from T2");
         }
@@ -357,18 +440,20 @@ public class AVLTree extends BTreePrinter {
     }
 
     public NodeList split(int key) {
-        return new NodeList();// This is incorrect, fix this by calling the static split
+        return split(this.root, key);// This is incorrect, fix this by calling the static split
     }
 
     public static NodeList split(Node r, int key) {
-        NodeList list = new NodeList();
+
         if (r == null) {
-            return list;
+            return new NodeList();
         } else if (key < r.key) {
+            NodeList list;
             list = split(r.left, key);
             list.r2 = mergeWithRoot(list.r2, r.right, r);
             return list;
         } else { // key>=root.key
+            NodeList list;
             list = split(r.right, key);
             list.r1 = mergeWithRoot(r.left, list.r1, r);
             return list;
