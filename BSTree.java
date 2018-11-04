@@ -96,23 +96,23 @@ public class BSTree extends BTreePrinter {
 
         Node x = y.left;
         if (y == root) {// Is Root
-            
-            if(x.right != null){
+
+            if (x.right != null) {
                 x.right.parent = y;
             }
             y.left = x.right;
             y.parent = x;
             x.right = y;
-            
+
             root = x;
         } else {
             // not root
             if (y.parent.left == y) {
                 y.parent.left = x;
-                x.parent = y.parent.left;
+                x.parent = y.parent;
             } else if (y.parent.right == y) {
                 y.parent.right = x;
-                x.parent = y.parent.right;
+                x.parent = y.parent;
             }
             y.parent = x;
             y.left = x.right;
@@ -128,33 +128,31 @@ public class BSTree extends BTreePrinter {
     public void singleRotateFromRight(Node y) {
         // Do something
         Node x = y.right;
-        if(y==root){// Is root
-            if(x.left != null){
+        if (y == root) {// Is root
+            if (x.left != null) {
                 x.left.parent = y;
             }
             y.right = x.left;
             y.parent = x;
             x.left = y;
             root = x;
-        }else {
-            if (y.parent == null) {// that root
-                y.parent = x;
-                x.parent = y.parent;
-            } else if (y.parent.left == y) {
+        } else {
+            // not root
+            if (y.parent.left == y) {
                 y.parent.left = x;
-                x.parent = y.parent.left;
+                x.parent = y.parent;
             } else if (y.parent.right == y) {
                 y.parent.right = x;
-                x.parent = y.parent.right;
+                x.parent = y.parent;
             }
             y.parent = x;
             y.right = x.left;
             if (x.left != null) {
                 x.left.parent = y;
             }
-            x.left = y; 
+            x.left = y;
         }
-        
+
     }
 
     public void doubleRotateFromLeft(Node y) {
@@ -163,7 +161,7 @@ public class BSTree extends BTreePrinter {
         Node z = x.right;
         singleRotateFromRight(x);
         singleRotateFromLeft(y);
-        
+
     }
 
     public void doubleRotateFromRight(Node y) {
@@ -261,13 +259,20 @@ public class BSTree extends BTreePrinter {
     }
 
     public static boolean isMergeable(Node r1, Node r2) {
-        return false;// Fix this
+        if (Node.size(r1) < Node.size(r2)) {
+            return true;
+        }
+        return false;
     }
 
     public static Node mergeWithRoot(Node r1, Node r2, Node t) {
         if (isMergeable(r1, r2)) {
             // Fix this
-            return null;
+            t.left = r1;
+            t.right = r2;
+            r1.parent = t;
+            r2.parent = t;
+            return t;
         } else {
             System.out.println("All nodes in T1 must be smaller than all nodes from T2");
             return null;
@@ -276,7 +281,10 @@ public class BSTree extends BTreePrinter {
 
     public void merge(BSTree tree2) {
         if (isMergeable(this.root, tree2.root)) {
-            // Do something
+            Node t = findMax(this.root);
+            delete(t.key);
+            mergeWithRoot(this.root, tree2.root, t);
+
         } else {
             System.out.println("All nodes in T1 must be smaller than all nodes from T2");
         }
@@ -292,10 +300,12 @@ public class BSTree extends BTreePrinter {
         if (r == null) {
             return list;
         } else if (key < r.key) {
-            // Do something
+            list = split(r.left, key);
+            list.r2 = mergeWithRoot(list.r2, r.right, r);
             return list;
         } else { // key>=root.key
-            // Do something
+            list = split(r.right, key);
+            list.r1 = mergeWithRoot(r.left, list.r1, r);
             return list;
         }
     }

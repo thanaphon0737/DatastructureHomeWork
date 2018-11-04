@@ -1,9 +1,10 @@
 /* HW7
  * Due: 5 November 2018
  * Problem Header Hash Code: 355a88089e03b21a427e11aed9924786
-*/ 
-
+ */
 package hw7_group17;
+
+import com.sun.scenario.effect.impl.Renderer;
 
 public class AVLTree extends BTreePrinter {
 
@@ -47,7 +48,7 @@ public class AVLTree extends BTreePrinter {
     }
 
     public static Node findMin(Node node) {
-        if (node==null || node.left == null) {
+        if (node == null || node.left == null) {
             return node;
         } else {
             return findMin(node.left);
@@ -59,13 +60,13 @@ public class AVLTree extends BTreePrinter {
     }
 
     public static Node findMax(Node node) {
-        if (node==null || node.right == null) {
+        if (node == null || node.right == null) {
             return node;
         } else {
             return findMax(node.right);
         }
     }
-    
+
     public void insert(int key) {
         if (root == null) {
             root = new Node(key);
@@ -83,69 +84,144 @@ public class AVLTree extends BTreePrinter {
             if (node.left == null) {
                 node.left = new Node(key);
                 node.left.parent = node;
+                while ((!(node.isImbalance())) && node.parent != null) {
+                        node = node.parent;
+                        if(node == tree.root) break;
+                }
+                rebalance(tree, node);
             } else {
                 insert(tree, node.left, key);
             }
-        } else{ // Go right
+        } else { // Go right
             if (node.right == null) {
                 node.right = new Node(key);
                 node.right.parent = node;
+                while ((!(node.isImbalance())) && node.parent != null) {
+                        node = node.parent;
+                        if(node == tree.root) break;
+                }
+                rebalance(tree, node);
             } else {
                 insert(tree, node.right, key);
             }
         }
     }
-    
+
     // Fix this
     // If you do not understant my code, feel free to implement your own code
-    public static void rebalance(AVLTree tree, Node node){
-        if (node.isImbalance()){
-            
+    public static void rebalance(AVLTree tree, Node node) {
+        if (node.isImbalance()) {
+
             /////////////////////////////////////////////////////////////////////////////
             // This code segment is make sure that we rebalance the first imbalance node closest to the leaves
-            if (Node.height(node)>2){
-                if (Node.height(node.left) > Node.height(node.right)){
+            if (Node.height(node) > 2) {
+                if (Node.height(node.left) > Node.height(node.right)) {
                     rebalance(tree, node.left);
-                }else{
+                } else {
                     rebalance(tree, node.right);
                 }
             }
             /////////////////////////////////////////////////////////////////////////////
-            
+
             if (Node.height(node.left) > Node.height(node.right)) { // Left heavy?
                 if (Node.height(node.left.left) > Node.height(node.left.right)) { // Outer?
-                    System.out.println("Perform ??? (Node " + node.key +")"); // fix ???
+                    System.out.println("Perform SingleRotateFromLeft (Node " + node.key + ")"); // fix ???
                     // Do something (just add one line here)
-                }else{ // Inner?
-                    System.out.println("Perform ??? (Node " + node.key +")"); // fix ???
-                    // Do something (just add one line here)
-                }
-            }else{ // Right heavy?
-                if (Node.height(node.right.right) > Node.height(node.right.left)) { //Outer?
-                    System.out.println("Perform ??? (Node " + node.key +")"); // fix ???
-                    // Do something (just add one line here)
+                    tree.singleRotateFromLeft(node);
                 } else { // Inner?
-                    System.out.println("Perform ??? (Node " + node.key +")"); // fix ???
+                    System.out.println("Perform DoubleRotateFromleft (Node " + node.key + ")"); // fix ???
                     // Do something (just add one line here)
+                    tree.doubleRotateFromLeft(node);
+                }
+            } else { // Right heavy?
+                if (Node.height(node.right.right) > Node.height(node.right.left)) { //Outer?
+                    System.out.println("Perform SingleRotateFromRight (Node " + node.key + ")"); // fix ???
+                    // Do something (just add one line here)
+                    tree.singleRotateFromRight(node);
+                } else { // Inner?
+                    System.out.println("Perform DoubleRotateFromRight (Node " + node.key + ")"); // fix ???
+                    // Do something (just add one line here)
+                    tree.doubleRotateFromRight(node);
                 }
             }
         }
     }
-    
+
     public void singleRotateFromLeft(Node y) {
         // Do something (just copy the code from BSTree)
+        Node x = y.left;
+        if (y == root) {// Is Root
+
+            if (x.right != null) {
+                x.right.parent = y;
+            }
+            y.left = x.right;
+            y.parent = x;
+            x.right = y;
+
+            root = x;
+        } else {
+            // not root
+            if (y.parent.left == y) {
+                y.parent.left = x;
+                x.parent = y.parent;
+            } else if (y.parent.right == y) {
+                y.parent.right = x;
+                x.parent = y.parent;
+            }
+            y.parent = x;
+            y.left = x.right;
+            if (x.right != null) {
+                x.right.parent = y;
+            }
+
+            x.right = y;
+        }
     }
 
     public void singleRotateFromRight(Node y) {
         // Do something (just copy the code from BSTree)
+        Node x = y.right;
+        if (y == root) {// Is root
+            if (x.left != null) {
+                x.left.parent = y;
+            }
+            y.right = x.left;
+            y.parent = x;
+            x.left = y;
+            root = x;
+        } else {
+            //not root
+            if (y.parent.left == y) {
+                y.parent.left = x;
+                x.parent = y.parent;
+            } else if (y.parent.right == y) {
+                y.parent.right = x;
+                x.parent = y.parent;
+            }
+            y.parent = x;
+            y.right = x.left;
+            if (x.left != null) {
+                x.left.parent = y;
+            }
+            x.left = y;
+        }
     }
 
     public void doubleRotateFromLeft(Node y) {
         // Do something (just copy the code from BSTree)
+        Node x = y.left;
+        Node z = x.right;
+        singleRotateFromRight(x);
+        singleRotateFromLeft(y);
     }
 
     public void doubleRotateFromRight(Node y) {
         // Do something (just copy the code from BSTree)
+        Node x = y.right;
+        Node z = x.left;
+        singleRotateFromLeft(x);
+        singleRotateFromRight(y);
     }
 
     // Fix this function to have the rebalancing feature
@@ -157,6 +233,7 @@ public class AVLTree extends BTreePrinter {
         } else if (root.key == key) { // Delete root node
             if ((root.left == null) && (root.right == null)) { // Case 1 (leaf node)
                 root = null;
+                rebalance(this, root);
             } else if ((root.left != null) && (root.right != null)) { // Case 3 (full node)
                 Node minRightSubTree = findMin(root.right);
                 Node temp = new Node(minRightSubTree.key);
@@ -164,15 +241,19 @@ public class AVLTree extends BTreePrinter {
                 root = temp;
                 // recursively delete the node
                 delete(this, root.right, minRightSubTree.key);
+                rebalance(this, root);
             } else if (root.left != null) { // Case 2 (single child, left child)
                 root.left.parent = null; // make left child the root
                 root = root.left;
+                rebalance(this, root);
             } else { // Case 2 (single child, right child)
                 root.right.parent = null; // make right child the root
-                root = root.right; 
+                root = root.right;
+                rebalance(this, root);
             }
         } else { // Delete non-root node
             delete(this, root, key);
+
         }
     }
 
@@ -180,14 +261,13 @@ public class AVLTree extends BTreePrinter {
     // There should be rebalance function calling somewhere in the code
     // This function will delete non-root nodes
     public static void delete(AVLTree tree, Node node, int key) {
-        if (node==null)
-        {
+        if (node == null) {
             System.out.println("Key not found!!!");
-        }else if (node.key > key){ // Go left
+        } else if (node.key > key) { // Go left
             delete(tree, node.left, key);
-        }else if (node.key < key){ // Go right
+        } else if (node.key < key) { // Go right
             delete(tree, node.right, key);
-        }else if (node.key == key){ // Node to be deleted is found
+        } else if (node.key == key) { // Node to be deleted is found
             if ((node.left == null) && (node.right == null)) { // Case 1(leaf node)
                 if (node.key < node.parent.key) {
                     node.parent.left = null; // disown the left child
@@ -216,7 +296,7 @@ public class AVLTree extends BTreePrinter {
             }
         }
     }
-    
+
     // Replace node1 with a new node2
     // node2 must be created using "new Node(key)" before calling this function
     // This function is optional, you do not have to use it
@@ -239,35 +319,59 @@ public class AVLTree extends BTreePrinter {
         }
     }
 
-    public static boolean isMergeable(Node r1, Node r2){
+    public static boolean isMergeable(Node r1, Node r2) {
+        if (Node.size(r1) < Node.size(r2)) {
+            return true;
+        }
         return false;// Fix this (just copy the code from BSTree)
     }
-    
-    public static Node mergeWithRoot(Node r1, Node r2, Node t){
-        if (isMergeable(r1, r2)){
+
+    public static Node mergeWithRoot(Node r1, Node r2, Node t) {
+        if (isMergeable(r1, r2)) {
             // Do something
             // Do not forget to rebalance
-            return null; // fix this
-        }else{
+            t.left = r1;
+            t.right = r2;
+            r1.parent = t;
+            r2.parent = t;
+
+            return t;
+
+            // fix this
+        } else {
             System.out.println("All nodes in T1 must be smaller than all nodes from T2");
             return null;
         }
     }
-          
-    public void merge(AVLTree tree2){
-        if (isMergeable(this.root, tree2.root)){
+
+    public void merge(AVLTree tree2) {
+        if (isMergeable(this.root, tree2.root)) {
             // do something
-        }else{
+            Node t = findMax(this.root);
+            delete(t.key);
+            mergeWithRoot(this.root, tree2.root, t);
+        } else {
             System.out.println("All nodes in T1 must be smaller than all nodes from T2");
         }
-        
+
     }
-    
-    public NodeList split(int key){
+
+    public NodeList split(int key) {
         return new NodeList();// This is incorrect, fix this by calling the static split
     }
-    public static NodeList split(Node r, int key){
+
+    public static NodeList split(Node r, int key) {
         NodeList list = new NodeList();
-        return list; // Fix this
+        if (r == null) {
+            return list;
+        } else if (key < r.key) {
+            list = split(r.left, key);
+            list.r2 = mergeWithRoot(list.r2, r.right, r);
+            return list;
+        } else { // key>=root.key
+            list = split(r.right, key);
+            list.r1 = mergeWithRoot(r.left, list.r1, r);
+            return list;
+        }
     }
 }

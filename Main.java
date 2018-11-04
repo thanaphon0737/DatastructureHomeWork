@@ -17,32 +17,21 @@ public class Main {
 
     public static void main(String[] args) {
 
-        BSTree tree;
-        tree = generateTree1();
-        tree.printTree();
-
-        System.out.println("---- Test7 doubleRotateFromRight at Lv 1 ----");
-        tree.doubleRotateFromRight(tree.find(8));
-        tree.printTree();
-        System.out.println("---- Test8 doubleRotateFromLeft at Lv 1 ----");
-        tree = generateTree1();
-        tree.doubleRotateFromLeft(tree.find(8));
-        tree.printTree();
-        System.out.println("---- Test9.1 doubleRotateFromLeft at Lv 2 ----");
-        tree = generateTree1();
-        tree.doubleRotateFromLeft(tree.find(4));
-        tree.printTree();
-        System.out.println("---- Test9.2 doubleRotateFromLeft at Lv 2 ----");
-        tree = generateTree1();
-        tree.doubleRotateFromLeft(tree.find(12));
-        tree.printTree();
-        System.out.println("---- Test10.1 doubleRotateFromRight at Lv 2 ----");
-        tree = generateTree1();
-        tree.doubleRotateFromRight(tree.find(4));
-        tree.printTree();
-        System.out.println("---- Test10.2 doubleRotateFromRight at Lv 2 ----");
-        tree = generateTree1();
-        tree.doubleRotateFromRight(tree.find(12));
-        tree.printTree();
+        AVLTree tree = new AVLTree();
+        int[] keyList = {51, 30, 69, 18, 42, 63, 87, 12, 24, 36, 45, 57, 66, 81,
+            93, 15, 21, 27, 33, 39, 48, 54, 60, 75, 84, 90, 96, 72, 78};
+        for (int i = 0; i < keyList.length; i++) {
+            tree.insert(keyList[i]);
+        }
+        //tree.printTree();
+        tree.insert(73); // must perform SingleRotationFromLeft(Node 81)
+        //tree.printTree();
+        tree.insert(77); // must perform DoubleRotationFromLeft(Node 87)
+        tree.insert(76); // must perform SingleRotationFromLeft(Node 78)
+        tree.insert(80); // must perform DoubleRotationFromRight(Node 69)
+        tree.insert(74); // must perform SingleRotationFromRight(Node 72)
+        tree.insert(64); // do nothing
+        tree.insert(55); // must perform SingleRotationFromLeft(Node 69)
+        tree.insert(70); // must perform DoubleRotationFromRight(Node 51)
     }
 }

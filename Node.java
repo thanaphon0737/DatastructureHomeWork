@@ -14,7 +14,14 @@ public class Node{
     public Node(int data){
         this.key = data;
     }
+    public static int size(Node node) {
+        if (node == null) {
+            return 0;
+        } else {
+            return (size(node.left) + 1 + size(node.right));
+        }
 
+    }
     // To simplify the problem, Please use 'height(node)' to evaluate height of the node
     public static int height(Node node){
         if (node == null)
@@ -24,6 +31,11 @@ public class Node{
     }
 
     public boolean isImbalance(){
-        return false; // fix this
+        // fix this
+        
+        if(Math.abs(height(this.left)-height(this.right)) > 1){
+            return true; 
+        }
+        return false;
     }
 }
